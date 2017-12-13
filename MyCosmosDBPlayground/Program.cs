@@ -13,11 +13,14 @@ namespace MyCosmosDBPlayground
     {
         private static readonly string DatabaseId = ConfigurationManager.AppSettings["database"];
         private static readonly string CollectionId = ConfigurationManager.AppSettings["collection"];
+        private static readonly string EndPointId = ConfigurationManager.AppSettings["endpoint"];
+        private static readonly string AuthKeyId = ConfigurationManager.AppSettings["authkey"];
+
         private static DocumentClient client;
 
         static void Main(string[] args)
         {
-            client = new DocumentClient(new Uri(ConfigurationManager.AppSettings["endpoint"]), ConfigurationManager.AppSettings["authKey"]);
+            client = new DocumentClient(new Uri(EndPointId), AuthKeyId);
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
 
@@ -30,13 +33,10 @@ namespace MyCosmosDBPlayground
             foreach (dynamic book in bookQuery)
             {
                 Console.WriteLine("\tRead {0}", book.book);
-                Console.WriteLine("\tRead {0}", book.chapters);
             }
            
             Console.Read();
         }
-
-
         private static async Task CreateDatabaseIfNotExistsAsync()
         {
             try
@@ -82,15 +82,4 @@ namespace MyCosmosDBPlayground
             }
         }
     }
-
-    public class Bible
-    {
-        [JsonProperty(PropertyName = "book")]
-        public string Book { get; set; }
-
-        [JsonProperty(PropertyName = "chapters")]
-        public string Chapters { get; set; }
-       
-    }
-
 }
